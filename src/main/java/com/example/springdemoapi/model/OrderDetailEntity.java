@@ -5,19 +5,23 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "tb_order")
-public class OrderEntity {
+@Entity(name = "tb_order_detail")
+public class OrderDetailEntity {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<OrderDetailEntity> orderDetails = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private OrderEntity order;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private ProductEntity product;
+
 }

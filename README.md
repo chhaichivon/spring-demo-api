@@ -1,10 +1,10 @@
 Build
 
-    docker build -t chhaichivon/spring-demo-api:v1.0.6 .
+    docker build -t chhaichivon/spring-demo-api:v1.0.7 .
 
 Run
 
-    docker run -p 8080:8080 chhaichivon/spring-demo-api:v1.0.6
+    docker run -p 8080:8080 chhaichivon/spring-demo-api:v1.0.7
 
 API Swagger UI
 

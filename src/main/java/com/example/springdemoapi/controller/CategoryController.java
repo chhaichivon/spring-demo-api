@@ -1,13 +1,12 @@
 package com.example.springdemoapi.controller;
 
-import com.example.springdemoapi.model.Category;
+import com.example.springdemoapi.model.CategoryEntity;
 import com.example.springdemoapi.repository.CategoryRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -21,8 +20,8 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Category>> findAll(@RequestParam(value = "page", defaultValue = "0") int page,
-                                                  @RequestParam(value = "limit", defaultValue = "30") int limit) {
+    public ResponseEntity<List<CategoryEntity>> findAll(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                        @RequestParam(value = "limit", defaultValue = "30") int limit) {
         if(limit > 30){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }else{
@@ -31,7 +30,7 @@ public class CategoryController {
     }
 
     @RequestMapping(value = "{categoryId}", method = RequestMethod.GET)
-    public ResponseEntity<Category> findById(@PathVariable("categoryId") Integer categoryId) {
+    public ResponseEntity<CategoryEntity> findById(@PathVariable("categoryId") Integer categoryId) {
         if(categoryId == 0 || categoryId < 0){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }else{
@@ -40,24 +39,24 @@ public class CategoryController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<Category> save(@RequestBody Category category) {
-        if(Objects.isNull(category)){
+    public ResponseEntity<CategoryEntity> save(@RequestBody CategoryEntity categoryEntity) {
+        if(Objects.isNull(categoryEntity)){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }else{
-            return new ResponseEntity<>(categoryRepository.save(category), HttpStatus.OK);
+            return new ResponseEntity<>(categoryRepository.save(categoryEntity), HttpStatus.OK);
         }
     }
 
     @RequestMapping(value = "/{categoryId}", method = RequestMethod.PUT)
-    public ResponseEntity<Category> update(@PathVariable("categoryId") Integer categoryId,
-                                          @RequestBody Category category) {
+    public ResponseEntity<CategoryEntity> update(@PathVariable("categoryId") Integer categoryId,
+                                                 @RequestBody CategoryEntity categoryEntity) {
         if(categoryId == 0 || categoryId < 0){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }else{
-            Category cat = categoryRepository.findById(categoryId).orElse(null);
+            CategoryEntity cat = categoryRepository.findById(categoryId).orElse(null);
             if(Objects.nonNull(cat)){
-                category.setId(categoryId);
-                return new ResponseEntity<>(categoryRepository.save(category), HttpStatus.OK);
+                categoryEntity.setId(categoryId);
+                return new ResponseEntity<>(categoryRepository.save(categoryEntity), HttpStatus.OK);
             }else{
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
             }
@@ -65,14 +64,14 @@ public class CategoryController {
     }
 
     @DeleteMapping(value = "/{categoryId}")
-    public ResponseEntity<Category> delete(@PathVariable("categoryId") Integer categoryId){
+    public ResponseEntity<CategoryEntity> delete(@PathVariable("categoryId") Integer categoryId){
         if(categoryId == 0 || categoryId < 0){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }else{
-            Category category = categoryRepository.findById(categoryId).orElse(null);
-            if(Objects.nonNull(category)){
+            CategoryEntity categoryEntity = categoryRepository.findById(categoryId).orElse(null);
+            if(Objects.nonNull(categoryEntity)){
                 categoryRepository.deleteById(categoryId);
-                return new ResponseEntity<>(category, HttpStatus.OK);
+                return new ResponseEntity<>(categoryEntity, HttpStatus.OK);
             }else{
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
             }

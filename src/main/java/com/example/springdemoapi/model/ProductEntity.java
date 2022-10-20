@@ -6,21 +6,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class Category {
+@Entity(name = "tb_product")
+public class ProductEntity {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private int id;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Integer id;
     private String name;
     private String description;
+    private float price;
+    private int discount;
     @JsonIgnore
-    @OneToMany(mappedBy = "category")
-    private List<Product> products = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name="category_id")
+    private CategoryEntity category;
 }
