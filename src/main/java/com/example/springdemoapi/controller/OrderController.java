@@ -1,7 +1,8 @@
 package com.example.springdemoapi.controller;
 
 import com.example.springdemoapi.model.OrderEntity;
-import com.example.springdemoapi.repository.OrderRepository;
+import com.example.springdemoapi.payload.OrderPayload;
+import com.example.springdemoapi.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,10 +14,10 @@ import java.util.Objects;
 @RequestMapping(value = "/api/v1/order")
 public class OrderController {
 
-    private final OrderRepository orderRepository;
+    private final OrderService orderService;
 
-    public OrderController(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
     }
 
     @GetMapping
@@ -25,7 +26,7 @@ public class OrderController {
         if(limit > 30){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }else{
-            return new ResponseEntity<>(orderRepository.findAll(), HttpStatus.OK);
+            return new ResponseEntity<>(orderService.findAll(page,limit), HttpStatus.OK);
         }
     }
 
@@ -34,32 +35,26 @@ public class OrderController {
         if(orderId == 0 || orderId < 0){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }else{
-            return new ResponseEntity<>(orderRepository.findById(orderId).orElse(null), HttpStatus.OK);
+            return new ResponseEntity<>(orderService.findById(orderId), HttpStatus.OK);
         }
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<OrderEntity> save(@RequestBody OrderEntity orderEntity) {
-        if(Objects.isNull(orderEntity)){
+    public ResponseEntity<OrderEntity> save(@RequestBody OrderPayload orderPayload) {
+        if(Objects.isNull(orderPayload)){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }else{
-            return new ResponseEntity<>(orderRepository.save(orderEntity), HttpStatus.OK);
+            return new ResponseEntity<>(orderService.save(orderPayload), HttpStatus.OK);
         }
     }
 
     @RequestMapping(value = "/{orderId}", method = RequestMethod.PUT)
     public ResponseEntity<OrderEntity> update(@PathVariable("orderId") Integer orderId,
-                                           @RequestBody OrderEntity orderEntity) {
+                                           @RequestBody OrderPayload orderPayload) {
         if(orderId == 0 || orderId < 0){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }else{
-            OrderEntity order = orderRepository.findById(orderId).orElse(null);
-            if(Objects.nonNull(order)){
-                orderEntity.setId(orderId);
-                return new ResponseEntity<>(orderRepository.save(orderEntity), HttpStatus.OK);
-            }else{
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            }
+            return new ResponseEntity<>(orderService.update(orderId, orderPayload), HttpStatus.OK);
         }
     }
 
@@ -68,13 +63,7 @@ public class OrderController {
         if(orderId == 0 || orderId < 0){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }else{
-            OrderEntity category = orderRepository.findById(orderId).orElse(null);
-            if(Objects.nonNull(category)){
-                orderRepository.deleteById(orderId);
-                return new ResponseEntity<>(category, HttpStatus.OK);
-            }else{
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            }
+            return new ResponseEntity<>(orderService.delete(orderId), HttpStatus.OK);
         }
     }
 }

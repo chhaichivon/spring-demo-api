@@ -1,10 +1,8 @@
 package com.example.springdemoapi.controller;
 
-import com.example.springdemoapi.model.CategoryEntity;
 import com.example.springdemoapi.model.ProductEntity;
 import com.example.springdemoapi.payload.ProductPayload;
-import com.example.springdemoapi.repository.CategoryRepository;
-import com.example.springdemoapi.repository.ProductRepository;
+import com.example.springdemoapi.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +15,10 @@ import java.util.Objects;
 @RequestMapping(value = "/api/v1/product")
 public class ProductController {
 
-    private final ProductRepository productRepository;
-    private final CategoryRepository categoryRepository;
+    private final ProductService productService;
 
-    public ProductController(ProductRepository productRepository, CategoryRepository categoryRepository) {
-        this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
 
@@ -33,7 +29,7 @@ public class ProductController {
         if(limit > 30){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }else{
-            return new ResponseEntity<>(productRepository.findAll(), HttpStatus.OK);
+            return new ResponseEntity<>(productService.findAll(page,limit), HttpStatus.OK);
         }
     }
 
@@ -43,37 +39,26 @@ public class ProductController {
         if(productId == 0 || productId < 0){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }else{
-            return new ResponseEntity<>(productRepository.findById(productId).orElse(null), HttpStatus.OK);
+            return new ResponseEntity<>(productService.findById(productId), HttpStatus.OK);
         }
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<ProductEntity> save(@RequestHeader Map<String, String> headers,
-                                              @RequestBody ProductPayload productReq) {
-        CategoryEntity categoryEntity = categoryRepository.findById(productReq.getCategoryId()).orElse(null);
-        if(Objects.nonNull(categoryEntity)){
-            ProductEntity productEntity = new ProductEntity();
-            productEntity.setName(productReq.getName());
-            productEntity.setDescription(productReq.getDescription());
-            productEntity.setPrice(productReq.getPrice());
-            productEntity.setDiscount(productReq.getDiscount());
-            productEntity.setCategory(categoryEntity);
-            return new ResponseEntity<>(productRepository.save(productEntity), HttpStatus.OK);
+    public ResponseEntity<ProductEntity> save(@RequestBody ProductPayload productReq) {
+        if(Objects.nonNull(productReq)){
+            return new ResponseEntity<>(productService.save(productReq), HttpStatus.OK);
         }
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @RequestMapping(value = "/{productId}", method = RequestMethod.PUT)
-    public ResponseEntity<ProductEntity> update(@RequestHeader Map<String, String> headers,
-                                                @PathVariable("productId") Integer productId,
-                                                @RequestBody ProductEntity productEntity) {
+    public ResponseEntity<ProductEntity> update(@PathVariable("productId") Integer productId,
+                                                @RequestBody ProductPayload productReq) {
         if(productId == 0 || productId < 0){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }else{
-            ProductEntity pro = productRepository.findById(productId).orElse(null);
-            if(Objects.nonNull(pro)){
-                productEntity.setId(productId);
-                return new ResponseEntity<>(productRepository.save(productEntity), HttpStatus.OK);
+            if(Objects.nonNull(productReq)){
+                return new ResponseEntity<>(productService.update(productId, productReq), HttpStatus.OK);
             }else{
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
             }
@@ -81,18 +66,11 @@ public class ProductController {
     }
 
     @DeleteMapping(value = "/{productId}")
-    public ResponseEntity<ProductEntity> delete(@RequestHeader Map<String, String> headers,
-                                                @PathVariable("productId") Integer productId){
+    public ResponseEntity<ProductEntity> delete(@PathVariable("productId") Integer productId){
         if(productId == 0 || productId < 0){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }else{
-            ProductEntity pro = productRepository.findById(productId).orElse(null);
-            if(Objects.nonNull(pro)){
-                productRepository.deleteById(productId);
-                return new ResponseEntity<>(pro, HttpStatus.OK);
-            }else{
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            }
+            return new ResponseEntity<>(productService.delete(productId), HttpStatus.NOT_FOUND);
         }
     }
 }
