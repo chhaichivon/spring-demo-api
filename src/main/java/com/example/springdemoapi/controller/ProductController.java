@@ -21,7 +21,6 @@ public class ProductController {
         this.productService = productService;
     }
 
-
     @GetMapping
     public ResponseEntity<List<ProductEntity>> findAll(@RequestHeader Map<String, String> headers,
                                                        @RequestParam(value = "page", defaultValue = "0") int page,
