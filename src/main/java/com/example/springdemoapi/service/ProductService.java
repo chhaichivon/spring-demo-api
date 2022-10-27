@@ -5,6 +5,7 @@ import com.example.springdemoapi.model.ProductEntity;
 import com.example.springdemoapi.payload.ProductPayload;
 import com.example.springdemoapi.repository.CategoryRepository;
 import com.example.springdemoapi.repository.ProductRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,8 +22,8 @@ public class ProductService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<ProductEntity> findAll(Integer page, Integer limit){
-        return productRepository.findAll();
+    public List<ProductEntity> findAll(Integer page, Integer size){
+        return productRepository.findAll(PageRequest.of(page,size)).getContent();
     }
 
     public ProductEntity findById(Integer productId){

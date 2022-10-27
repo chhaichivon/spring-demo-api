@@ -2,11 +2,11 @@ package com.example.springdemoapi.service;
 
 import com.example.springdemoapi.model.OrderDetailEntity;
 import com.example.springdemoapi.model.OrderEntity;
-import com.example.springdemoapi.model.ProductEntity;
 import com.example.springdemoapi.payload.OrderPayload;
 import com.example.springdemoapi.repository.OrderDetailRepository;
 import com.example.springdemoapi.repository.OrderRepository;
 import com.example.springdemoapi.repository.ProductRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class OrderService {
     }
 
     public List<OrderEntity> findAll(Integer page, Integer limit){
-        return orderRepository.findAll();
+        return orderRepository.findAll(PageRequest.of(page,limit)).getContent();
     }
 
     public OrderEntity findById(Integer orderId){
@@ -59,13 +59,26 @@ public class OrderService {
     }
 
     public OrderEntity update(Integer orderId, OrderPayload orderPayload){
-        return orderRepository.save(new OrderEntity());
+        OrderEntity orderEntity = findById(orderId);
+        if(Objects.nonNull(orderEntity)){
+            orderEntity.setEmail(orderPayload.getEmail());
+            orderEntity.setPhoneNumber(orderPayload.getPhoneNumber());
+            orderEntity.setPhoneNumber2(orderPayload.getPhoneNumber2());
+            orderEntity.setAmount(orderPayload.getAmount());
+            orderEntity.setDiscountCode(orderPayload.getDiscountCode());
+            orderEntity.setDiscount(orderPayload.getDiscount());
+            orderEntity.setTotalAmount(orderPayload.getTotalAmount());
+            orderEntity.setDelivery(orderPayload.isDelivery());
+            orderEntity.setDeliveryDate(orderPayload.getDeliveryDate());
+            orderEntity = orderRepository.save(orderEntity);
+        }
+        return orderEntity;
     }
 
     public OrderEntity delete(Integer orderId){
-        OrderEntity category = findById(orderId);
-        if(Objects.nonNull(category))
+        OrderEntity orderEntity = findById(orderId);
+        if(Objects.nonNull(orderEntity))
             orderRepository.deleteById(orderId);
-        return category;
+        return orderEntity;
     }
 }

@@ -5,6 +5,7 @@ import com.example.springdemoapi.payload.UserRegisterPayload;
 import com.example.springdemoapi.payload.UserUpdatePayload;
 import com.example.springdemoapi.repository.RoleRepository;
 import com.example.springdemoapi.repository.UserRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class UserService {
     }
 
     public List<UserEntity> findAll(Integer page, Integer size){
-        return userRepository.findAll();
+        return userRepository.findAll(PageRequest.of(page,size)).getContent();
     }
 
     public UserEntity findById(Integer userId){

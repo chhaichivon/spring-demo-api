@@ -3,6 +3,7 @@ package com.example.springdemoapi.service;
 import com.example.springdemoapi.model.CategoryEntity;
 import com.example.springdemoapi.payload.CategoryPayload;
 import com.example.springdemoapi.repository.CategoryRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class CategoryService {
     }
 
     public List<CategoryEntity> findAll(Integer page, Integer size){
-        return categoryRepository.findAll();
+        return categoryRepository.findAll(PageRequest.of(page,size)).getContent();
     }
 
     public CategoryEntity findById(Integer categoryId){
