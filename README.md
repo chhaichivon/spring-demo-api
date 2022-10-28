@@ -1,6 +1,6 @@
 Build
 
-    docker build -t chhaichivon/spring-demo-api:v1.0.8 .
+    docker build -t chhaichivon/spring-demo-api:v1.0.10 .
 
 Run
 

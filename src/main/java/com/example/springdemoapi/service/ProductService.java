@@ -2,8 +2,11 @@ package com.example.springdemoapi.service;
 
 import com.example.springdemoapi.model.CategoryEntity;
 import com.example.springdemoapi.model.ProductEntity;
+import com.example.springdemoapi.model.ProductImageEntity;
+import com.example.springdemoapi.payload.ProductImagePayload;
 import com.example.springdemoapi.payload.ProductPayload;
 import com.example.springdemoapi.repository.CategoryRepository;
+import com.example.springdemoapi.repository.ProductImageRepository;
 import com.example.springdemoapi.repository.ProductRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -16,10 +19,12 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ProductImageRepository productImageRepository;
 
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, ProductImageRepository productImageRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.productImageRepository = productImageRepository;
     }
 
     public List<ProductEntity> findAll(Integer page, Integer size){
@@ -39,7 +44,15 @@ public class ProductService {
             productEntity.setPrice(productPayload.getPrice());
             productEntity.setDiscount(productPayload.getDiscount());
             productEntity.setCategory(categoryEntity);
-            return productRepository.save(productEntity);
+            productEntity = productRepository.save(productEntity);
+            for (ProductImagePayload productImage : productPayload.getProductImages()){
+                ProductImageEntity productImageEntity = new ProductImageEntity();
+                productImageEntity.setImageUrl(productImage.getImageUrl());
+                productImageEntity.setThumbnail(productImage.getThumbnail());
+                productImageEntity.setProduct(productEntity);
+                productImageRepository.save(productImageEntity);
+            }
+            return productEntity;
         }
         return null;
     }

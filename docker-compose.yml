@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   api:
-    image: chhaichivon/spring-demo-api:v1.0.6
+    image: chhaichivon/spring-demo-api:v1.0.10
     container_name: shop_spring_api
     restart: on-failure
     env_file: ./.env
@@ -40,7 +40,7 @@ services:
     networks:
       - backend
   app:
-    image: chhaichivon/react-demo-app:v1.0.1
+    image: chhaichivon/react-demo-app:v1.0.2
     build:
       context: .
       args:
