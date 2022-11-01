@@ -1,11 +1,13 @@
 package com.example.springdemoapi.service;
 
 import com.example.springdemoapi.model.CategoryEntity;
+import com.example.springdemoapi.model.EStatus;
 import com.example.springdemoapi.payload.CategoryPayload;
 import com.example.springdemoapi.repository.CategoryRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,11 +30,19 @@ public class CategoryService {
 
     public CategoryEntity save(CategoryPayload categoryPayload){
         CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setName(categoryPayload.getName());
+        categoryEntity.setDescription(categoryPayload.getDescription());
+        categoryEntity.setStatus(EStatus.ACTIVE);
+        categoryEntity.setCreatedAt(new Date());
         return categoryRepository.save(categoryEntity);
     }
 
     public CategoryEntity update(Integer categoryId, CategoryPayload categoryPayload){
         CategoryEntity categoryEntity = findById(categoryId);
+        categoryEntity.setName(categoryPayload.getName());
+        categoryEntity.setDescription(categoryPayload.getDescription());
+        categoryEntity.setStatus(EStatus.ACTIVE);
+        categoryEntity.setUpdatedAt(new Date());
         return categoryRepository.save(categoryEntity);
     }
 

@@ -10,7 +10,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "tb_order_detail")
-public class OrderDetailEntity {
+public class OrderDetailEntity extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)

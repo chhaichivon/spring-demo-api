@@ -12,7 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "tb_product_image")
-public class ProductImageEntity implements Serializable {
+public class ProductImageEntity extends BaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)

@@ -17,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "tb_product")
-public class ProductEntity implements Serializable {
+public class ProductEntity extends BaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)

@@ -13,7 +13,7 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "tb_role")
-public class RoleEntity {
+public class RoleEntity extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)

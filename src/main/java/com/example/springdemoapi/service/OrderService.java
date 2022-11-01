@@ -1,5 +1,6 @@
 package com.example.springdemoapi.service;
 
+import com.example.springdemoapi.model.EStatus;
 import com.example.springdemoapi.model.OrderDetailEntity;
 import com.example.springdemoapi.model.OrderEntity;
 import com.example.springdemoapi.payload.OrderPayload;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,6 +48,8 @@ public class OrderService {
         orderEntity.setTotalAmount(orderPayload.getTotalAmount());
         orderEntity.setDelivery(orderPayload.isDelivery());
         orderEntity.setDeliveryDate(orderPayload.getDeliveryDate());
+        orderEntity.setStatus(EStatus.ACTIVE);
+        orderEntity.setCreatedAt(new Date());
         orderEntity = orderRepository.save(orderEntity);
         List<OrderDetailEntity> orderDetailEntities = new ArrayList<>();
         for (Integer productId: orderPayload.getProductIds()){
@@ -70,6 +74,8 @@ public class OrderService {
             orderEntity.setTotalAmount(orderPayload.getTotalAmount());
             orderEntity.setDelivery(orderPayload.isDelivery());
             orderEntity.setDeliveryDate(orderPayload.getDeliveryDate());
+            orderEntity.setStatus(EStatus.ACTIVE);
+            orderEntity.setUpdatedAt(new Date());
             orderEntity = orderRepository.save(orderEntity);
         }
         return orderEntity;

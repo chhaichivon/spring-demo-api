@@ -34,6 +34,7 @@ public class UserService {
         UserEntity userEntity = new UserEntity();
         userEntity.setEmail(userRegisterPayload.getEmail());
         userEntity.setPassword(userRegisterPayload.getPassword());
+
         return userRepository.save(userEntity);
     }
 

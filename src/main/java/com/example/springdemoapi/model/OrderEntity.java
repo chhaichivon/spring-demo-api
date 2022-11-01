@@ -13,7 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "tb_order")
-public class OrderEntity {
+public class OrderEntity extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)

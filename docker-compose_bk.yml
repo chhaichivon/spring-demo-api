@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  api:
+    image: chhaichivon/spring-demo-api:v1.0.10
+    container_name: shop_spring_api
+    restart: on-failure
+    env_file: ./.env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/shop?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+      SPRING_DATASOURCE_USERNAME: shop
+      SPRING_DATASOURCE_PASSWORD: 123456
+    volumes:
+      - .m2:/root/.m2
+    networks:
+      - backend
+      - frontend
+  db:
+    image: mysql:latest
+    container_name: shop_mysql_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: shop
+      MYSQL_USER: shop
+      MYSQL_PASSWORD: 123456
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql/data
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=root--execute \"SHOW DATABASES;\""
+      interval: 2s
+      timeout: 20s
+      retries: 10
+    networks:
+      - backend
+  app:
+    image: chhaichivon/react-demo-app:v1.0.2
+    build:
+      args:
+        REACT_APP_API_BASE_URL: http://127.0.0.1:8080/api
+    container_name: shop_react_app
+    restart: always
+    depends_on:
+      - api
+    networks:
+      - frontend
+
+volumes:
+  mysql-data:
+
+networks:
+  backend:
+  frontend:

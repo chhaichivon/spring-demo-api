@@ -1,6 +1,7 @@
 package com.example.springdemoapi.service;
 
 import com.example.springdemoapi.model.CategoryEntity;
+import com.example.springdemoapi.model.EStatus;
 import com.example.springdemoapi.model.ProductEntity;
 import com.example.springdemoapi.model.ProductImageEntity;
 import com.example.springdemoapi.payload.ProductImagePayload;
@@ -11,6 +12,7 @@ import com.example.springdemoapi.repository.ProductRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,12 +46,16 @@ public class ProductService {
             productEntity.setPrice(productPayload.getPrice());
             productEntity.setDiscount(productPayload.getDiscount());
             productEntity.setCategory(categoryEntity);
+            productEntity.setStatus(EStatus.ACTIVE);
+            productEntity.setCreatedAt(new Date());
             productEntity = productRepository.save(productEntity);
             for (ProductImagePayload productImage : productPayload.getProductImages()){
                 ProductImageEntity productImageEntity = new ProductImageEntity();
                 productImageEntity.setImageUrl(productImage.getImageUrl());
                 productImageEntity.setThumbnail(productImage.getThumbnail());
                 productImageEntity.setProduct(productEntity);
+                productImageEntity.setStatus(EStatus.ACTIVE);
+                productImageEntity.setCreatedAt(new Date());
                 productImageRepository.save(productImageEntity);
             }
             return productEntity;
@@ -60,6 +66,12 @@ public class ProductService {
     public ProductEntity update(Integer productId, ProductPayload productPayload){
         ProductEntity productEntity = findById(productId);
         if(Objects.nonNull(productPayload) && Objects.nonNull(productEntity)){
+            productEntity.setName(productPayload.getName());
+            productEntity.setDescription(productPayload.getDescription());
+            productEntity.setPrice(productPayload.getPrice());
+            productEntity.setDiscount(productPayload.getDiscount());
+            productEntity.setStatus(EStatus.ACTIVE);
+            productEntity.setUpdatedAt(new Date());
             return productRepository.save(productEntity);
         }
         return null;

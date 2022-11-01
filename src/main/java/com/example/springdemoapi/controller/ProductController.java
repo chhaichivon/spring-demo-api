@@ -22,8 +22,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductEntity>> findAll(@RequestHeader Map<String, String> headers,
-                                                       @RequestParam(value = "page", defaultValue = "0") int page,
+    public ResponseEntity<List<ProductEntity>> findAll(@RequestParam(value = "page", defaultValue = "0") int page,
                                                        @RequestParam(value = "limit", defaultValue = "30") int limit) {
         if(limit > 30){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -33,8 +32,7 @@ public class ProductController {
     }
 
     @RequestMapping(value = "{productId}", method = RequestMethod.GET)
-    public ResponseEntity<ProductEntity> findById(@RequestHeader Map<String, String> headers,
-                                                  @PathVariable("productId") Integer productId) {
+    public ResponseEntity<ProductEntity> findById(@PathVariable("productId") Integer productId) {
         if(productId == 0 || productId < 0){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }else{
